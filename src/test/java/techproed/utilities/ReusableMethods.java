@@ -4,9 +4,13 @@ import com.google.common.collect.ImmutableMap;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.sql.Driver;
 import java.time.Duration;
 
 public class ReusableMethods {
@@ -110,12 +114,6 @@ public class ReusableMethods {
         ));
     }
 
-//    public void scrollTo(String text){
-//        AppiumBy.ByAndroidUIAutomator permissionElement = new  AppiumBy.ByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\""+ text +"\"))");
-//
-//        driver.findElement(permissionElement);
-//    }
-
     public void scrollToText(AndroidDriver driver, String text ) {
         try {
             AppiumBy.ByAndroidUIAutomator permissionElement = new AppiumBy.ByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"" + text + "\"))");
@@ -135,47 +133,58 @@ public class ReusableMethods {
         }
     }
 
-    public static void productNameKnownAddToCart(AndroidDriver driver, String productName) {
+
+    public void scrollToTextAndAddToCart(AndroidDriver driver, String productName) {
         try {
-            // Scroll to the product name
-            AppiumBy.ByAndroidUIAutomator productElement = new AppiumBy.ByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"" + productName + "\"))");
-            WebElement product = driver.findElement(productElement);
+            System.out.println("Scrolling to product: " + productName);
 
-            // Find the parent element of the product name
-            WebElement productContainer = product.findElement(AppiumBy.xpath(".."));
-
-            // Find the "Add to Cart" button within the product container
-            WebElement addToCartButton = productContainer.findElement(AppiumBy.xpath(".//android.widget.Button[contains(@text, 'Add to Cart')]"));
-
-            // Click the "Add to Cart" button
-            addToCartButton.click();
-        } catch (Exception e) {
-            System.out.println("Element not found or could not click 'Add to Cart': " + e.getMessage());
-        }
-    }
-
-    public void scrollToTextAndAddToCart(AndroidDriver driver, String productName, String parentXpath) {
-        try {
-            // Ürün adını içeren öğeye kaydırma işlemi yap
+            // Scroll to the element containing the product name
             AppiumBy.ByAndroidUIAutomator productElement = new AppiumBy.ByAndroidUIAutomator(
                     "new UiScrollable(new UiSelector()).scrollIntoView(text(\"" + productName + "\"))"
             );
             WebElement product = driver.findElement(productElement);
 
-            // Ürün öğesinin ebeveyn öğesini verilen XPath ile bul
-            WebElement productContainer = product.findElement(AppiumBy.xpath(parentXpath));
-            bekle(2);
-            // Ebeveyn öğesi içindeki "ADD TO CART" butonunu bul
-            //WebElement addToCartButton = productContainer.findElement(AppiumBy.xpath(".//android.widget.Button[@text='ADD TO CART']"));
-            WebElement addToCartButton = productContainer.findElement(AppiumBy.xpath(".//android.widget.TextView[@text='ADD TO CART']"));
-//            (//android.widget.TextView[@text="ADD TO CART"])
+            System.out.println("Found product: " + productName);
 
+            // Find the parent element using the product element's ancestor axis
+            String parentXpath = "//android.widget.TextView[@text='" + productName + "']/ancestor::android.widget.RelativeLayout";
+            System.out.println("Parent XPath: " + parentXpath);
 
-            // "ADD TO CART" butonuna tıkla
-            addToCartButton.click();
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebElement productContainer = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    AppiumBy.xpath(parentXpath)
+            ));
+
+            System.out.println("Found product container for: " + productName);
+
+            // Find the "ADD TO CART" button within the parent element dynamically
+            String addToCartButtonXpath = ".//android.widget.TextView[@resource-id='com.androidsample.generalstore:id/productAddCart']";
+            System.out.println("Add to Cart Button XPath: " + addToCartButtonXpath);
+
+            WebElement addToCartButton = wait.until(ExpectedConditions.elementToBeClickable(
+                    productContainer.findElement(AppiumBy.xpath(addToCartButtonXpath))
+            ));
+
+            System.out.println("Found 'ADD TO CART' button for product: " + productName);
+
+            // Click the "ADD TO CART" button
+            if (addToCartButton.isDisplayed() && addToCartButton.isEnabled()) {
+                addToCartButton.click();
+                System.out.println("Clicked 'ADD TO CART' button for product: " + productName);
+            } else {
+                System.out.println("'ADD TO CART' button is not clickable for product: " + productName);
+            }
+        } catch (NoSuchElementException e) {
+            System.out.println("Element not found for product: " + productName + ". Error: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Element not found or could not click 'ADD TO CART': " + e.getMessage());
+            System.out.println("Could not click 'ADD TO CART' for product: " + productName + ". Error: " + e.getMessage());
         }
+    }
+
+    //Visible Wait
+    public static void visibleWait(AndroidDriver driver, WebElement element, int sayi){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(sayi));
+        wait.until(ExpectedConditions.visibilityOf(element));
     }
 }
 

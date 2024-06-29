@@ -16,7 +16,9 @@ public class ChromeBrowserBaseTest extends ReusableMethods {
     @BeforeClass
     public void setup() throws MalformedURLException {
         UiAutomator2Options options = new UiAutomator2Options()
-                .withBrowserName("Chrome")
+                //.setUdid("Gercek Cihaz Kimlik Bilgisi") //Buraya terminalde yeni sayfa acip adb devices yazarak testlerde kullanacagimiz gercek cihazimizi giriyoruz.
+                //Bu islem zorunlu degil sadece iki cihaz kullanarak kopmayi engelliyoruz.
+                .withBrowserName("Chrome") //Sadece bu eklenti ile Chrome Browser'a gecis yapabiliyoruz.
                 ;
 
 
