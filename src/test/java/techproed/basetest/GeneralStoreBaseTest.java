@@ -25,6 +25,9 @@ public class GeneralStoreBaseTest extends ReusableMethods {
         UiAutomator2Options options = new UiAutomator2Options()
                 .setApp(appUrl);
 
+        //com.androidsample.generalstore     ==> appPackage
+        //com.androidsample.generalstore.MainActivity   ==> appActivity
+
         URL url = new URL("http://0.0.0.0:4723");
         driver = new AndroidDriver(url, options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
