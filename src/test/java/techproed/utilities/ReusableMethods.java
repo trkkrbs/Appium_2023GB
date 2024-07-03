@@ -15,14 +15,15 @@ import java.time.Duration;
 
 public class ReusableMethods {
 
-    public void bekle(int second){
+    public void bekle(int second) {
         try {
-            Thread.sleep(second*1000);
+            Thread.sleep(second * 1000);
         } catch (InterruptedException e) {
             System.out.println("Bekleme yapilamadi");
             throw new RuntimeException(e);
         }
     }
+
     public void clickGesture(AndroidDriver driver, WebElement element) {
         driver.executeScript("mobile: clickGesture", ImmutableMap.of(
                 "elementId", ((RemoteWebElement) element).getId()
@@ -86,7 +87,7 @@ public class ReusableMethods {
         ));
     }
 
-    public void dragGesture(AndroidDriver driver,int startX, int startY, int endX, int endY, int speed) {
+    public void dragGesture(AndroidDriver driver, int startX, int startY, int endX, int endY, int speed) {
         driver.executeScript("mobile: dragGesture", ImmutableMap.of(
                 "startX", startX,
                 "startY", startY,
@@ -114,7 +115,7 @@ public class ReusableMethods {
         ));
     }
 
-    public void scrollToText(AndroidDriver driver, String text ) {
+    public void scrollToText(AndroidDriver driver, String text) {
         try {
             AppiumBy.ByAndroidUIAutomator permissionElement = new AppiumBy.ByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"" + text + "\"))");
             driver.findElement(permissionElement);
@@ -123,7 +124,7 @@ public class ReusableMethods {
         }
     }
 
-    public void scrollToTextAndCLick(AndroidDriver driver, String text ) {
+    public void scrollToTextAndCLick(AndroidDriver driver, String text) {
         try {
             AppiumBy.ByAndroidUIAutomator permissionElement = new AppiumBy.ByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"" + text + "\"))");
             WebElement element = driver.findElement(permissionElement);
@@ -132,54 +133,6 @@ public class ReusableMethods {
             System.out.println("Element not found: " + e.getMessage());
         }
     }
-
-
-//    public void scrollToTextAndAddToCart(AndroidDriver driver, String productName) {
-//        try {
-//            System.out.println("Scrolling to product: " + productName);
-//
-//            // Scroll to the element containing the product name
-//            AppiumBy.ByAndroidUIAutomator productElement = new AppiumBy.ByAndroidUIAutomator(
-//                    "new UiScrollable(new UiSelector()).scrollIntoView(text(\"" + productName + "\"))"
-//            );
-//            WebElement product = driver.findElement(productElement);
-//
-//            System.out.println("Found product: " + productName);
-//
-//            // Find the parent element using the product element's ancestor axis
-//            String parentXpath = "//android.widget.TextView[@text='" + productName + "']/ancestor::android.widget.RelativeLayout";
-//            System.out.println("Parent XPath: " + parentXpath);
-//
-//            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-//            WebElement productContainer = wait.until(ExpectedConditions.visibilityOfElementLocated(
-//                    AppiumBy.xpath(parentXpath)
-//            ));
-//
-//            System.out.println("Found product container for: " + productName);
-//
-//            // Find the "ADD TO CART" button within the parent element dynamically
-//            String addToCartButtonXpath = ".//android.widget.TextView[@resource-id='com.androidsample.generalstore:id/productAddCart']";
-//            System.out.println("Add to Cart Button XPath: " + addToCartButtonXpath);
-//
-//            WebElement addToCartButton = wait.until(ExpectedConditions.elementToBeClickable(
-//                    productContainer.findElement(AppiumBy.xpath(addToCartButtonXpath))
-//            ));
-//
-//            System.out.println("Found 'ADD TO CART' button for product: " + productName);
-//
-//            // Click the "ADD TO CART" button
-//            if (addToCartButton.isDisplayed() && addToCartButton.isEnabled()) {
-//                addToCartButton.click();
-//                System.out.println("Clicked 'ADD TO CART' button for product: " + productName);
-//            } else {
-//                System.out.println("'ADD TO CART' button is not clickable for product: " + productName);
-//            }
-//        } catch (NoSuchElementException e) {
-//            System.out.println("Element not found for product: " + productName + ". Error: " + e.getMessage());
-//        } catch (Exception e) {
-//            System.out.println("Could not click 'ADD TO CART' for product: " + productName + ". Error: " + e.getMessage());
-//        }
-//    }
 
     public void scrollToTextAndAddToCart(AndroidDriver driver, String productName) {
         try {
@@ -217,9 +170,10 @@ public class ReusableMethods {
     }
 
     //Visible Wait
-    public static void visibleWait(AndroidDriver driver, WebElement element, int sayi){
+    public static void visibleWait(AndroidDriver driver, WebElement element, int sayi) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(sayi));
         wait.until(ExpectedConditions.visibilityOf(element));
     }
 }
+
 
